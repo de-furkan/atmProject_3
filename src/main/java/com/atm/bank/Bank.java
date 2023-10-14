@@ -10,8 +10,8 @@ public class Bank {
      *****************************************
     */
 
-    private final String bankName = "XBankUniversal";
-    private final String bankBranchId = "XB13541";
+    private final String name = "XBankUniversal";
+    private final String branchId = "XB13541";
     private final String address = "6595 Breitenberg Orchard, New Margo, MO 81496";
     private final String contactNumber = "850-615-1458";
     private final String workingHours = "Monday - Sat: 9am - 3pm\n" + "Sunday: Closed";
@@ -34,11 +34,11 @@ public class Bank {
     */
 
     public String getBankName() {
-        return bankName;
+        return name;
     }
 
     public String getBankBranchId() {
-        return bankBranchId;
+        return branchId;
     }
 
     public String getAddress() {
