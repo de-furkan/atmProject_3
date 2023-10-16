@@ -3,6 +3,8 @@ package com.atm.components;
 import com.atm.bank.Bank;
 import com.atm.utilities.ConsoleUtils;
 
+import java.util.Scanner;
+
 public class SplashScreen {
     /*
      *****************************************
@@ -11,6 +13,44 @@ public class SplashScreen {
      */
     Bank bank = new Bank();
     ConsoleUtils console = new ConsoleUtils();
+    Scanner scanner = new Scanner(System.in);
+
+    /*
+     *****************************************
+     * Private Fields / Data
+     *****************************************
+     */
+
+    private String accountNumber;
+    private String pin;
+
+    /*
+     **********
+     * Getters
+     **********
+     */
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    /*
+     **********
+     * Setters
+     **********
+     */
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
 
     /*
      *****************************************
@@ -37,15 +77,80 @@ public class SplashScreen {
 
                 //Contact Number and Working Hours
                 .append("--------------------------------------------------------------------------\n")
-                .append("Contact Number: ").append(console.purpleBold).append(bank.getContactNumber()).append(console.reset).append("\n\n")
+                .append("Contact Number: ").append(console.yellowBold).append(bank.getContactNumber()).append(console.reset).append("\n\n")
                 .append("Working Days: \n").append(bank.getWorkingHours()).append("\n")
                 .append("--------------------------------------------------------------------------");
 
         System.out.println(buildMessage);
     }
 
-    public static void main(String[] args) {
-        SplashScreen splashScreen = new SplashScreen();
-        splashScreen.welcomeMessageBeforeCardVerification();
+    /*
+     *****************************************
+     * Verification/Authentication Message
+     *****************************************
+     */
+    public void verificationIntroMessage() {
+        System.out.println(console.purpleBold +"Verification & Authentication Screen" + console.reset);
+        System.out.println("You will be prompted to enter your card number and pin to proceed.");
+    }
+
+    /*
+     *****************************************
+     * Verify Cardholder Account Number
+     *****************************************
+     */
+    public void verifyCardNumber() {
+        //Check account number
+        try {
+            System.out.println("Please enter your card number below: ");
+            setAccountNumber(scanner.nextLine().replaceAll("[^0-9]", ""));
+
+            if (getAccountNumber().length() != 8) {
+                throw new Exception("Card number must be 8 digits long.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            verifyCardNumber();
+        }
+    }
+
+    /*
+     *****************************************
+     * Verify Cardholder Pin
+     *****************************************
+     */
+    public void verifyCardPin() {
+    //Check pin
+        try {
+            System.out.println("Please enter your pin below: ");
+            setPin(scanner.nextLine().replaceAll("[^0-9]", ""));
+
+            if (getPin().length() != 4) {
+                    throw new Exception("Pin must be 4 digits long.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            verifyCardPin();
+        }
+    }
+
+    /*
+     *****************************************
+     * Display Verification Success Message
+     *****************************************
+     */
+    public void verificationSuccessMessage() {
+        if (getAccountNumber().length() == 8 && getPin().length() == 4) {
+            System.out.println("Cardholder verification and authentication successful...");
+        }
+    }
+
+    /*
+     *****************************************
+     * Authenticate Cardholder
+     *****************************************
+     */
+    public void authenticateCardholder() {
+
     }
 }
