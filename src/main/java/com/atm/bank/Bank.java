@@ -1,7 +1,5 @@
 package com.atm.bank;
 
-import org.testng.annotations.Test;
-
 public class Bank {
 
     /*
