@@ -1,4 +1,4 @@
-package com.atm.atm_components;
+package com.atm.components;
 
 public class TransferScreen {
 }

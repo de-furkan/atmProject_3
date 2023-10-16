@@ -1,4 +1,4 @@
 package com.atm.components;
 
-public class DepositScreen {
+public class ChangePin {
 }
