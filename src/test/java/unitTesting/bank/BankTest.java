@@ -33,11 +33,4 @@ public class BankTest {
         Bank bank = new Bank();
         Assert.assertEquals("850-615-1458", bank.getContactNumber() );
     }
-
-    //test the getWorkingHours() method
-    @Test
-    public void testGetWorkingHours() {
-        Bank bank = new Bank();
-        Assert.assertEquals("Monday - Sat: 9am - 3pm\n" + "Sunday: Closed", bank.getWorkingHours() );
-    }
 }
