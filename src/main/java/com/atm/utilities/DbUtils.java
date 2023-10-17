@@ -180,7 +180,9 @@ public class DbUtils {
                 continue;
             }
 
+            //set the connectionChoice value to the user input
             setConnectionChoice(input.replaceAll("[^1-2]", ""));
+
             //the if-else clause below is used to display the option chosen by the user in colour-coded format
             if (getConnectionChoice().length() == 1 && getConnectionChoice().equals("1")) {
                 System.out.println(console.greenBackground + console.blackBold + " You have chosen option: " + getConnectionChoice() + " " + console.reset + "\n");
