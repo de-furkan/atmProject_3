@@ -103,7 +103,7 @@ public class SplashScreen {
     public void verifyCardNumber() {
         //Check account number
         try {
-            System.out.println("Please enter your card number below: ");
+            System.out.println("Please enter your account number below: ");
             setAccountNumber(scanner.nextLine().replaceAll("[^0-9]", ""));
 
             if (getAccountNumber().length() != 8) {
