@@ -2,7 +2,6 @@ package com.atm.components;
 
 import com.atm.bank.Bank;
 import com.atm.utilities.ConsoleUtils;
-
 import java.util.Scanner;
 
 public class SplashScreen {
@@ -12,7 +11,9 @@ public class SplashScreen {
      *****************************************
      */
     Bank bank = new Bank();
+    //console object for text output colors in the console
     ConsoleUtils console = new ConsoleUtils();
+    //scanner object for user input
     Scanner scanner = new Scanner(System.in);
 
     /*
