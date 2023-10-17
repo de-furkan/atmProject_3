@@ -2,6 +2,7 @@ package com.atm.utilities;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -287,9 +288,62 @@ public class DbUtils {
             //Show success message if connection is a success
             System.out.println(
                     "Successfully connected to database:" + console.reset + " " +
-                            console.blackBackground + console.greenBold + " " + connection.getCatalog() + " " + console.reset
+                     console.blackBackground + console.greenBold + " " + connection.getCatalog() + " " + console.reset
             );
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Create registered_users table
+    public void createRegisteredUsersTable() {
+        try {
+            //Stored existing table name in a variable
+            String checkTable = "SELECT to_regclass('public.registered_users')";
+            ResultSet rs = connection.createStatement().executeQuery(checkTable);
+
+            //Check if table exists
+            if (rs.next() && rs.getString(1) != null) {
+                System.out.println(console.redBrightBackground + console.blackBold + " Table already exists. " + console.reset);
+            } else {
+                //Create table if it does not exist
+                StringBuilder createTable = new StringBuilder();
+                createTable
+                            .append("CREATE TABLE IF NOT EXISTS registered_users").append("(").append("\n")
+                            .append("id SERIAL PRIMARY KEY,").append("\n")
+                            .append("first_name VARCHAR(50) NOT NULL,").append("\n")
+                            .append("last_name VARCHAR(50) NOT NULL,").append("\n")
+                            .append("date_of_birth DATE NOT NULL,").append("\n")
+                            .append("gender VARCHAR(6) NOT NULL,").append("\n")
+                            .append("country_of_birth VARCHAR(50) NOT NULL,").append("\n")
+                            .append("address VARCHAR(100) NOT NULL,").append("\n")
+                            .append("ssn VARCHAR(11) NOT NULL,").append("\n")
+                            .append("phone VARCHAR(11) NOT NULL,").append("\n")
+                            .append("username VARCHAR(50) NOT NULL,").append("\n")
+                            .append("password VARCHAR(50) NOT NULL,").append("\n")
+                            .append("current_amount DECIMAL(10,2) NOT NULL,").append("\n")
+                            .append("is_active BOOLEAN NOT NULL,").append("\n")
+                            .append("pin INTEGER NOT NULL,").append("\n")
+                            .append("card_number VARCHAR(16) NOT NULL,").append("\n")
+                            .append("sort_code VARCHAR(6) NOT NULL,").append("\n")
+                            .append("account_number VARCHAR(8) NOT NULL,").append("\n")
+                            .append("created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP").append("\n")
+                            .append(");"
+                            );
+                //executeUpdate method is used to execute the SQL script
+                connection.createStatement().executeUpdate(createTable.toString());
+
+                //Show success message if table is created successfully
+                //Also reminds users to double-check their database to ensure the table is visible
+                System.out.println(console.greenBrightBackground + console.blackBold + " Table created successfully. " + console.reset);
+                System.out.println(console.purpleBold + " » Please check the table is visible in your database... " + console.reset + "\n");
+
+                //Close ResultSet and Statement objects
+                rs.close();
+                connection.createStatement().close();
+            }
+
+            } catch (SQLException e) {
             e.printStackTrace();
         }
     }
