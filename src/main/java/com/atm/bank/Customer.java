@@ -36,7 +36,7 @@ public class Customer {
     private int pin;
     private String cardNumber;
     private String sortCode;
-    private int accountNumber;
+    private String accountNumber;
 
     /*
      **********
@@ -103,7 +103,7 @@ public class Customer {
         return sortCode;
     }
 
-    public int getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
@@ -173,7 +173,7 @@ public class Customer {
         this.sortCode = sortCode;
     }
 
-    public void setAccountNumber(int accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
@@ -418,7 +418,7 @@ public class Customer {
     public void generateAccountNumber() {
         //Generate a random 8-digit account number
         int accountNumber = faker.number().numberBetween(100_000_00, 999_999_99);
-        setAccountNumber(accountNumber);
+        setAccountNumber(String.valueOf(accountNumber));
     }
 
     /*
@@ -470,6 +470,5 @@ public class Customer {
 
         //Display JSON data
         System.out.println(buildJson);
-        System.out.println(console.blackBackground + console.redBold + " ❯ Save a copy of the data above somewhere safe " + console.reset + "\n");
     }
 }
