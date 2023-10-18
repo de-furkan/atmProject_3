@@ -2,7 +2,13 @@ package com.atm.components;
 
 import com.atm.bank.Bank;
 import com.atm.utilities.ConsoleUtils;
+import com.atm.utilities.DbUtils;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Scanner;
+
+import static com.atm.utilities.DbUtils.connection;
 
 public class SplashScreen {
     /*
@@ -15,6 +21,8 @@ public class SplashScreen {
     ConsoleUtils console = new ConsoleUtils();
     //scanner object for user input
     Scanner scanner = new Scanner(System.in);
+    //DbUtils for database connection/information
+    DbUtils database = new DbUtils();
 
     /*
      *****************************************
@@ -23,7 +31,7 @@ public class SplashScreen {
      */
 
     private String accountNumber;
-    private String pin;
+    private int pin;
 
     /*
      **********
@@ -35,7 +43,7 @@ public class SplashScreen {
         return accountNumber;
     }
 
-    public String getPin() {
+    public int getPin() {
         return pin;
     }
 
@@ -49,7 +57,7 @@ public class SplashScreen {
         this.accountNumber = accountNumber;
     }
 
-    public void setPin(String pin) {
+    public void setPin(int pin) {
         this.pin = pin;
     }
 
@@ -92,7 +100,10 @@ public class SplashScreen {
      */
     public void verificationIntroMessage() {
         System.out.println(console.purpleBold +"Verification & Authentication Screen" + console.reset);
-        System.out.println("You will be prompted to enter your card number and pin to proceed.");
+        System.out.println("You will be prompted to enter your account number and pin to proceed.");
+        System.out.println("Please note, you can check your information by scrolling to the top\n" +
+                "in the console, or by checking the database. \n" +
+                "Your personal data is stored in the database for your convenience, usually the first entry.\n");
     }
 
     /*
@@ -124,34 +135,11 @@ public class SplashScreen {
     //Check pin
         try {
             System.out.println("Please enter your pin below: ");
-            setPin(scanner.nextLine().replaceAll("[^0-9]", ""));
+            setPin(scanner.nextInt());
 
-            if (getPin().length() != 4) {
-                    throw new Exception("Pin must be 4 digits long.");
-            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             verifyCardPin();
         }
-    }
-
-    /*
-     *****************************************
-     * Display Verification Success Message
-     *****************************************
-     */
-    public void verificationSuccessMessage() {
-        if (getAccountNumber().length() == 8 && getPin().length() == 4) {
-            System.out.println("Cardholder verification and authentication successful...");
-        }
-    }
-
-    /*
-     *****************************************
-     * Authenticate Cardholder
-     *****************************************
-     */
-    public void authenticateCardholder() {
-
     }
 }
