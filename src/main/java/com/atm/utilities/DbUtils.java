@@ -1,10 +1,12 @@
 package com.atm.utilities;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.atm.bank.Customer;
+
+import java.sql.*;
 import java.util.Scanner;
+
+import static com.atm.runner.Atm_Runner.user_1;
+import static com.atm.runner.Atm_Runner.user_2;
 
 public class DbUtils {
     /*
@@ -14,12 +16,13 @@ public class DbUtils {
      */
     ConsoleUtils console = new ConsoleUtils();
     Scanner scanner = new Scanner(System.in);
+    Customer customer = new Customer();
     /*
      *****************************************
      * Private Fields / Data
      *****************************************
      */
-    private String connectionChoice = null; //user input for connection choice
+    private static String connectionChoice = null; //user input for connection choice
     private String connectionDomainName; //user input for domain name
     private String connectionPortNumber; //user input for port number
     private String connectionDatabaseName; //user input for database name
@@ -38,23 +41,23 @@ public class DbUtils {
         return connectionChoice;
     }
 
-    private String getConnectionDomainName() { //get domain name
+    public String getConnectionDomainName() { //get domain name
         return connectionDomainName;
     }
 
-    private String getConnectionPortNumber() { //get port number
+    public String getConnectionPortNumber() { //get port number
         return connectionPortNumber;
     }
 
-    private String getConnectionDatabaseName() { //get database name
+    public String getConnectionDatabaseName() { //get database name
         return connectionDatabaseName;
     }
 
-    private String getConnectionUsername() { //get username
+    public String getConnectionUsername() { //get username
         return connectionUsername;
     }
 
-    private String getConnectionPassword() { //get password
+    public String getConnectionPassword() { //get password
         return connectionPassword;
     }
 
@@ -313,21 +316,21 @@ public class DbUtils {
                 createTable
                             .append("CREATE TABLE IF NOT EXISTS registered_users").append("(").append("\n")
                             .append("id SERIAL PRIMARY KEY,").append("\n")
-                            .append("first_name VARCHAR(50) NOT NULL,").append("\n")
-                            .append("last_name VARCHAR(50) NOT NULL,").append("\n")
+                            .append("first_name VARCHAR(150) NOT NULL,").append("\n")
+                            .append("last_name VARCHAR(150) NOT NULL,").append("\n")
                             .append("date_of_birth DATE NOT NULL,").append("\n")
                             .append("gender VARCHAR(6) NOT NULL,").append("\n")
                             .append("country_of_birth VARCHAR(50) NOT NULL,").append("\n")
-                            .append("address VARCHAR(100) NOT NULL,").append("\n")
+                            .append("address VARCHAR(150) NOT NULL,").append("\n")
                             .append("ssn VARCHAR(11) NOT NULL,").append("\n")
-                            .append("phone VARCHAR(11) NOT NULL,").append("\n")
+                            .append("phone VARCHAR(15) NOT NULL,").append("\n")
                             .append("username VARCHAR(50) NOT NULL,").append("\n")
                             .append("password VARCHAR(50) NOT NULL,").append("\n")
                             .append("current_amount DECIMAL(10,2) NOT NULL,").append("\n")
                             .append("is_active BOOLEAN NOT NULL,").append("\n")
                             .append("pin INTEGER NOT NULL,").append("\n")
-                            .append("card_number VARCHAR(16) NOT NULL,").append("\n")
-                            .append("sort_code VARCHAR(6) NOT NULL,").append("\n")
+                            .append("card_number VARCHAR(19) NOT NULL,").append("\n")
+                            .append("sort_code VARCHAR(8) NOT NULL,").append("\n")
                             .append("account_number VARCHAR(8) NOT NULL,").append("\n")
                             .append("created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP").append("\n")
                             .append(");"
@@ -352,6 +355,149 @@ public class DbUtils {
 
     /*
      *****************************************
+     * Get saved option for connection
+     *****************************************
+     */
+    public void getSavedOption() {
+        //"jdbc:postgresql://domain:port/databaseName",
+        if (getConnectionChoice().equals("1")) {
+            connectToDatabase();
+        } else{
+            connectToDatabase(
+                    getConnectionDomainName(),
+                    getConnectionPortNumber(),
+                    getConnectionDatabaseName(),
+                    getConnectionUsername(),
+                    getConnectionPassword()
+            );
+        }
+    }
+
+    public static void main(String[] args) {
+        DbUtils dbUtils = new DbUtils();
+        dbUtils.connectToDatabaseOptions();
+        dbUtils.getSavedOption();
+        dbUtils.closeConnectionToDatabase();
+    }
+
+    public void registerCustomer() {
+        //first check the saved connection option
+        // and connect to the database
+        getSavedOption();
+
+        //sql prepared statement to add user to database
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO registered_users ")
+
+                .append("(").append("first_name, ")
+                .append("last_name, ").append("date_of_birth, ")
+                .append("gender, ").append("country_of_birth, ")
+                .append("address, ").append("ssn, ")
+                .append("phone, ").append("username, ")
+                .append("password, ").append("current_amount, ")
+                .append("is_active, ").append("pin, ")
+                .append("card_number, ").append("sort_code, ")
+                .append("account_number").append(") ")
+                .append("VALUES ")
+                .append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                );
+
+        //Create prepared statement object
+        //try-with-resources is used to automatically close the prepared statement after execution
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+            preparedStatement.setString(1, user_1.getFirstName());
+            preparedStatement.setString(2, user_1.getLastName());
+            preparedStatement.setDate(3, user_1.getDateOfBirth());
+            preparedStatement.setString(4, user_1.getGender());
+            preparedStatement.setString(5, user_1.getCountryOfBirth());
+            preparedStatement.setString(6, user_1.getAddress());
+            preparedStatement.setString(7, user_1.getSocialSecurityNumber());
+            preparedStatement.setString(8, user_1.getPhone());
+            preparedStatement.setString(9, user_1.getUsername());
+            preparedStatement.setString(10, user_1.getPassword());
+            preparedStatement.setDouble(11, user_1.getCurrentAmount());
+            preparedStatement.setBoolean(12, user_1.isActive());
+            preparedStatement.setInt(13, user_1.getPin());
+            preparedStatement.setString(14, user_1.getCardNumber());
+            preparedStatement.setString(15, user_1.getSortCode());
+            preparedStatement.setString(16, user_1.getAccountNumber());
+
+            //execute the prepared statement
+            preparedStatement.executeUpdate();
+            //Show success message if customer is added to database
+            System.out.println(
+                    console.greenBrightBackground +
+                    console.blackBold +
+                    " Customer successfully added to database... " + console.reset
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            //close the database connection
+            closeConnectionToDatabase();
+        }
+    }
+
+    public void registerDummyData() {
+        //first check the saved connection option
+        // and connect to the database
+        getSavedOption();
+
+        //sql prepared statement to add user to database
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO registered_users ")
+
+                .append("(").append("first_name, ")
+                .append("last_name, ").append("date_of_birth, ")
+                .append("gender, ").append("country_of_birth, ")
+                .append("address, ").append("ssn, ")
+                .append("phone, ").append("username, ")
+                .append("password, ").append("current_amount, ")
+                .append("is_active, ").append("pin, ")
+                .append("card_number, ").append("sort_code, ")
+                .append("account_number").append(") ")
+                .append("VALUES ")
+                .append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                );
+
+        //Create prepared statement object
+        //try-with-resources is used to automatically close the prepared statement after execution
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+            preparedStatement.setString(1, user_2.getFirstName());
+            preparedStatement.setString(2, user_2.getLastName());
+            preparedStatement.setDate(3, user_2.getDateOfBirth());
+            preparedStatement.setString(4, user_2.getGender());
+            preparedStatement.setString(5, user_2.getCountryOfBirth());
+            preparedStatement.setString(6, user_2.getAddress());
+            preparedStatement.setString(7, user_2.getSocialSecurityNumber());
+            preparedStatement.setString(8, user_2.getPhone());
+            preparedStatement.setString(9, user_2.getUsername());
+            preparedStatement.setString(10, user_2.getPassword());
+            preparedStatement.setDouble(11, user_2.getCurrentAmount());
+            preparedStatement.setBoolean(12, user_2.isActive());
+            preparedStatement.setInt(13, user_2.getPin());
+            preparedStatement.setString(14, user_2.getCardNumber());
+            preparedStatement.setString(15, user_2.getSortCode());
+            preparedStatement.setString(16, user_2.getAccountNumber());
+
+            //execute the prepared statement
+            preparedStatement.executeUpdate();
+            //Show success message if customer is added to database
+            System.out.println(
+                    console.greenBrightBackground +
+                            console.blackBold +
+                            " Customer successfully added to database... " + console.reset
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            //close the database connection
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
      * Close the database connection
      *****************************************
      */
@@ -369,4 +515,85 @@ public class DbUtils {
             System.out.println(console.redBold + "Cannot close the database connection because there is no connection to close..." + console.reset);
         }
     }
+
+    /*
+     *****************************************
+     * Display Verification Success Message
+     *****************************************
+     */
+
+    //Display the verification success message once the card is accepted
+    //This method MUST be used within the authenticateCardholder() method
+    public void verificationSuccessMessage(String accountNumber, int pin) {
+        if (accountNumber.length() == 8 && pin != 0) {
+            System.out.println("Cardholder verification and authentication successful...");
+        }
+    }
+
+    /*
+     *****************************************
+     * Authenticate Cardholder
+     *****************************************
+     */
+    public void authenticateCardholder(String accountNumber, int pin) {
+        getSavedOption();
+        //Authenticate cardholder
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM registered_users WHERE account_number = ? AND pin = ?");
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+            preparedStatement.setString(1, accountNumber);
+            preparedStatement.setInt(2, pin);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            String firstName = null;
+            String lastName = null;
+
+            while (rs.next()) {
+                firstName = rs.getString("first_name");
+                lastName = rs.getString("last_name");
+            }
+
+            System.out.println(
+                    console.redBrightBackground + console.blackBold +
+                    " Welcome " + firstName + " " + lastName + " " +
+                    console.reset
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
+     * Change user isActive to true
+     *****************************************
+     */
+    public void changeIsActive(String accountNumber, int pin) {
+        getSavedOption();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE registered_users SET is_active = ? WHERE account_number = ? AND pin = ?");
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+            preparedStatement.setBoolean(1, true);
+            preparedStatement.setString(2, accountNumber);
+            preparedStatement.setInt(3, pin);
+
+            preparedStatement.executeUpdate();
+
+            System.out.println(
+                    console.greenBackground + console.blackBold +
+                    " Changed user active from false to true " +
+                    console.reset
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
 }
