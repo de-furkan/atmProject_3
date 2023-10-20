@@ -1,16 +1,16 @@
 package com.atm.components;
 
 import com.atm.bank.Bank;
+import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Scanner;
 
-import static com.atm.utilities.DbUtils.connection;
 
 public class SplashScreen {
+
+    private DbUtils database;
+
     /*
      *****************************************
      * Libraries / Classes
@@ -21,44 +21,19 @@ public class SplashScreen {
     ConsoleUtils console = new ConsoleUtils();
     //scanner object for user input
     Scanner scanner = new Scanner(System.in);
-    //DbUtils for database connection/information
-    DbUtils database = new DbUtils();
+
+    BalanceScreen balanceScreen = new BalanceScreen();
 
     /*
      *****************************************
-     * Private Fields / Data
+     * Constructors
      *****************************************
      */
-
-    private String accountNumber;
-    private int pin;
-
-    /*
-     **********
-     * Getters
-     **********
-     */
-
-    public String getAccountNumber() {
-        return accountNumber;
+    public SplashScreen() {
+        this.database = Atm_Runner.database;
     }
 
-    public int getPin() {
-        return pin;
-    }
-
-    /*
-     **********
-     * Setters
-     **********
-     */
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public void setPin(int pin) {
-        this.pin = pin;
+    public SplashScreen(DbUtils database) {
     }
 
     /*
@@ -108,38 +83,51 @@ public class SplashScreen {
 
     /*
      *****************************************
-     * Verify Cardholder Account Number
+     * Display options home menu
      *****************************************
      */
-    public void verifyCardNumber() {
-        //Check account number
-        try {
-            System.out.println("Please enter your account number below: ");
-            setAccountNumber(scanner.nextLine().replaceAll("[^0-9]", ""));
+    public void homeMenu() {
+        System.out.println("Please type number to select an option below: ");
+        System.out.println("1. Check Balance");
+        System.out.println("2. Withdraw");
+        System.out.println("3. Deposit");
+        System.out.println("4. Transfer");
+        System.out.println("5. Delete Account");
+        System.out.println("6. Change Pin");
+        System.out.println("7. Exit");
 
-            if (getAccountNumber().length() != 8) {
-                throw new Exception("Card number must be 8 digits long.");
+        String selectMenuOption;
+        do {
+            if (DbUtils.connection == null) {
+                this.database.getSavedOption();
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            verifyCardNumber();
-        }
-    }
-
-    /*
-     *****************************************
-     * Verify Cardholder Pin
-     *****************************************
-     */
-    public void verifyCardPin() {
-    //Check pin
-        try {
-            System.out.println("Please enter your pin below: ");
-            setPin(scanner.nextInt());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            verifyCardPin();
-        }
+            selectMenuOption = scanner.nextLine();
+            switch (selectMenuOption) {
+                case "1":
+                    System.out.println("You have selected option 1");
+                    balanceScreen.showBalanceMessage();
+                    break;
+                case "2":
+                    System.out.println("You have selected option 2");
+                    break;
+                case "3":
+                    System.out.println("You have selected option 3");
+                    break;
+                case "4":
+                    System.out.println("You have selected option 4");
+                    break;
+                case "5":
+                    System.out.println("You have selected option 5");
+                    break;
+                case "6":
+                    System.out.println("You have selected option 6");
+                    break;
+                case "7":
+                    System.out.println("You have selected option 7");
+                    break;
+                default:
+                    System.out.println("Invalid input. Please try again.");
+            }
+        } while (!selectMenuOption.matches("[1-7]"));
     }
 }
