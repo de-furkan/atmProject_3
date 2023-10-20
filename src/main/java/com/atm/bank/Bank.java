@@ -19,7 +19,7 @@ public class Bank {
 
     private final String name = "XBankUniversal";
     private final String branchId = "XB13541";
-    private final String address = "6595 Breitenberg Orchard, New Margo, MO 81496";
+    private final String address = "Orchard, New Margo, MO 81496";
     private final String contactNumber = "850-615-1458";
     private final String workingHours = "Mon - Sat: " + console.whiteBrightBackground + console.blackBold + " 9am - 3pm " + console.reset + "\n" +
             "Sunday:"+ console.redBold + " Closed " + console.reset;
