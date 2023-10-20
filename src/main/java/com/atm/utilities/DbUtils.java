@@ -1,7 +1,5 @@
 package com.atm.utilities;
 
-import com.atm.bank.Customer;
-
 import java.sql.*;
 import java.util.Scanner;
 
@@ -16,13 +14,14 @@ public class DbUtils {
      */
     ConsoleUtils console = new ConsoleUtils();
     Scanner scanner = new Scanner(System.in);
-    Customer customer = new Customer();
     /*
      *****************************************
      * Private Fields / Data
      *****************************************
      */
     private static String connectionChoice = null; //user input for connection choice
+    private String accountNumber;
+    private int accountPin;
     private String connectionDomainName; //user input for domain name
     private String connectionPortNumber; //user input for port number
     private String connectionDatabaseName; //user input for database name
@@ -61,6 +60,14 @@ public class DbUtils {
         return connectionPassword;
     }
 
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public int getAccountPin() {
+        return accountPin;
+    }
+
     /*
      *********
      * Setters
@@ -88,6 +95,14 @@ public class DbUtils {
 
     public void setConnectionPassword(String connectionPassword) { //set password
         this.connectionPassword = connectionPassword;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public void setAccountPin(int accountPin) {
+        this.accountPin = accountPin;
     }
 
     /*
@@ -373,13 +388,6 @@ public class DbUtils {
         }
     }
 
-    public static void main(String[] args) {
-        DbUtils dbUtils = new DbUtils();
-        dbUtils.connectToDatabaseOptions();
-        dbUtils.getSavedOption();
-        dbUtils.closeConnectionToDatabase();
-    }
-
     public void registerCustomer() {
         //first check the saved connection option
         // and connect to the database
@@ -498,6 +506,257 @@ public class DbUtils {
 
     /*
      *****************************************
+     * Ask user for account number
+     *****************************************
+     */
+    public void loginAskAccountNumber() {
+        System.out.println("Please enter your account number:");
+        String accountNumber = scanner.nextLine();
+
+        //account number must not be negative
+        if (accountNumber.charAt(0) == '-') {
+            System.out.println(console.redBrightBackground + console.blackBold + " Invalid input. Negative numbers are not allowed. Please try again. " + console.reset);
+            loginAskAccountNumber();
+
+          //account number must be 8 digits long
+        } else if (accountNumber.length() != 8){
+            System.out.println(console.redBrightBackground + console.blackBold + " Invalid input. Account numbers are 8 digits long. " + console.reset);
+            loginAskAccountNumber();
+
+          //account number must only contain digits
+        } else if (!accountNumber.matches("[0-9]+")) {
+            System.out.println(console.redBrightBackground + console.blackBold + " Invalid input. Account numbers should only contain digits. " + console.reset);
+            loginAskAccountNumber();
+
+          //if all conditions are met, then set the account number
+        } else {
+            setAccountNumber(accountNumber);
+            System.out.println(getAccountNumber());
+        }
+    }
+
+    /*
+     *****************************************
+     * Ask user for account pin
+     *****************************************
+     */
+
+    public void loginAskAccountPin() {
+        System.out.println("Please enter your pin:");
+        String pin = scanner.nextLine();
+
+        //pin must not be negative
+        if (pin.charAt(0) == '-' ) {
+            System.out.println(console.redBrightBackground + console.blackBold + " Invalid input. Negative numbers are not allowed. Please try again. " + console.reset);
+            loginAskAccountPin();
+
+          //pin must be 4 digits long
+        } else if (pin.length() != 4) {
+            System.out.println(console.redBrightBackground + console.blackBold + " Invalid input. Account pins are 4 digits long. " + console.reset);
+            loginAskAccountPin();
+
+          //pin must only contain digits
+        } else if (!pin.matches("[0-9]+")) {
+            System.out.println(console.redBrightBackground + console.blackBold + " Invalid input. Account pins should only contain digits. " + console.reset);
+            loginAskAccountPin();
+
+          //if all conditions are met, then set the account pin
+        } else {
+            setAccountPin(Integer.parseInt(pin));
+            System.out.println(getAccountPin());
+        }
+    }
+
+    /*
+     *****************************************
+     * validate account exists in database
+     *****************************************
+     */
+    public void validateAccountExists() {
+        getSavedOption();
+
+        // Open a new connection if necessary
+        if (connection == null) {
+            getSavedOption();
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM registered_users WHERE account_number = ? AND pin = ?");
+
+        try {
+            while (true) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+                    preparedStatement.setString(1, getAccountNumber());
+                    preparedStatement.setInt(2, getAccountPin());
+
+                    //execute the script and store the result
+                    ResultSet resultSet = preparedStatement.executeQuery();
+
+                    //check if the result set is empty
+                    if (!resultSet.next()) {
+                        System.out.println(
+                                console.redBrightBackground + console.blackBold +
+                                        " No account found with the provided account number and pin. Please try again. " +
+                                        console.reset
+                        );
+
+                        //if the result set is empty, then ask for account number and pin again
+                        loginAskAccountNumber();
+                        loginAskAccountPin();
+                    } else {
+                        // Account exists
+                        // Get the first name and last name of the customer
+                        String firstName = resultSet.getString("first_name");
+                        String lastName = resultSet.getString("last_name");
+
+                        // A small welcome message with user full name
+                        System.out.println(
+                                console.greenBrightBackground + console.blackBold +
+                                " Account Found! Welcome " + firstName + " " + lastName + " " +
+                                console.reset
+                        );
+                        break;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
+     * Update user isActive to true
+     *****************************************
+     */
+    public void updateUserActivity() {
+        getSavedOption();
+
+        // Open a new connection if necessary
+        if (connection == null) {
+            getSavedOption();
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE registered_users SET is_active = ? WHERE account_number = ? AND pin = ?");
+
+        try {
+            while (true) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+                    preparedStatement.setBoolean(1, true);
+                    preparedStatement.setString(2, getAccountNumber());
+                    preparedStatement.setInt(3, getAccountPin());
+
+                    //execute the script and store the result
+                    preparedStatement.executeUpdate();
+                    System.out.println(
+                            console.greenBrightBackground + console.blackBold +
+                                    " You are now ONLINE. " +
+                                    console.reset
+                    );
+                    break;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
+     * Show last four digits of card number
+     *****************************************
+     */
+    public String showFullCardNumber()  {
+        getSavedOption();
+
+        // Open a new connection if necessary
+        try {
+            if (connection == null || connection.isClosed()) {
+                getSavedOption();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM registered_users WHERE account_number = ? AND pin = ?");
+
+        try {
+            while (true) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+                    preparedStatement.setString(1, getAccountNumber());
+                    preparedStatement.setInt(2, getAccountPin());
+
+                    //execute the script and store the result
+                    ResultSet resultSet = preparedStatement.executeQuery();
+
+                    //check if the result set is empty
+                    if (!resultSet.next()) {
+                        System.out.println(
+                                console.redBrightBackground + console.blackBold +
+                                        " Account Connection Error... " +
+                                        console.reset
+                        );
+
+                    } else {
+                        // Account exists
+                        //returns the card number
+                        return resultSet.getString("card_number");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        } finally {
+            // Close the connection only once after all iterations are complete
+            closeConnectionToDatabase();
+        }
+        return null;
+    }
+
+
+
+    //Show a chosen entry field
+    public String showEntryField(String entryField) {
+        getSavedOption();
+
+        String sql = "SELECT " + entryField + " FROM registered_users WHERE account_number = ? AND pin = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql) ) {
+                preparedStatement.setString(1, getAccountNumber());
+                preparedStatement.setInt(2, getAccountPin());
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (!resultSet.next()) {
+                        System.out.println(
+                                console.redBrightBackground + console.blackBold +
+                                        " Account Connection Error... " +
+                                        console.reset
+                        );
+                } else {
+                        // Account exists
+                        //returns the chosen entry field value
+                        return resultSet.getString(entryField);
+                }
+                } catch (SQLException e) {
+                e.printStackTrace();
+                } finally {
+                closeConnectionToDatabase();
+        }
+        return null;
+    }
+
+    /*
+     *****************************************
      * Close the database connection
      *****************************************
      */
@@ -515,85 +774,4 @@ public class DbUtils {
             System.out.println(console.redBold + "Cannot close the database connection because there is no connection to close..." + console.reset);
         }
     }
-
-    /*
-     *****************************************
-     * Display Verification Success Message
-     *****************************************
-     */
-
-    //Display the verification success message once the card is accepted
-    //This method MUST be used within the authenticateCardholder() method
-    public void verificationSuccessMessage(String accountNumber, int pin) {
-        if (accountNumber.length() == 8 && pin != 0) {
-            System.out.println("Cardholder verification and authentication successful...");
-        }
-    }
-
-    /*
-     *****************************************
-     * Authenticate Cardholder
-     *****************************************
-     */
-    public void authenticateCardholder(String accountNumber, int pin) {
-        getSavedOption();
-        //Authenticate cardholder
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM registered_users WHERE account_number = ? AND pin = ?");
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
-            preparedStatement.setString(1, accountNumber);
-            preparedStatement.setInt(2, pin);
-
-            ResultSet rs = preparedStatement.executeQuery();
-            String firstName = null;
-            String lastName = null;
-
-            while (rs.next()) {
-                firstName = rs.getString("first_name");
-                lastName = rs.getString("last_name");
-            }
-
-            System.out.println(
-                    console.redBrightBackground + console.blackBold +
-                    " Welcome " + firstName + " " + lastName + " " +
-                    console.reset
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            closeConnectionToDatabase();
-        }
-    }
-
-    /*
-     *****************************************
-     * Change user isActive to true
-     *****************************************
-     */
-    public void changeIsActive(String accountNumber, int pin) {
-        getSavedOption();
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE registered_users SET is_active = ? WHERE account_number = ? AND pin = ?");
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
-            preparedStatement.setBoolean(1, true);
-            preparedStatement.setString(2, accountNumber);
-            preparedStatement.setInt(3, pin);
-
-            preparedStatement.executeUpdate();
-
-            System.out.println(
-                    console.greenBackground + console.blackBold +
-                    " Changed user active from false to true " +
-                    console.reset
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeConnectionToDatabase();
-        }
-    }
-
 }
