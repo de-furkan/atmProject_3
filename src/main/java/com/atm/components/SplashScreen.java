@@ -121,6 +121,8 @@ public class SplashScreen {
                     break;
                 case "4":
                     System.out.println("You have selected option 4");
+                    TransferScreen transferScreen = new TransferScreen();
+                    transferScreen.createTransferTransaction();
                     break;
                 case "5":
                     System.out.println("You have selected option 5");
