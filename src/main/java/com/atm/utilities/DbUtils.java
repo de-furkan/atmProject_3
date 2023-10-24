@@ -731,28 +731,47 @@ public class DbUtils {
         String sql = "SELECT " + entryField + " FROM registered_users WHERE account_number = ? AND pin = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql) ) {
-                preparedStatement.setString(1, getAccountNumber());
-                preparedStatement.setInt(2, getAccountPin());
+            preparedStatement.setString(1, getAccountNumber());
+            preparedStatement.setInt(2, getAccountPin());
 
-                ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-                if (!resultSet.next()) {
-                        System.out.println(
-                                console.redBrightBackground + console.blackBold +
-                                        " Account Connection Error... " +
-                                        console.reset
-                        );
-                } else {
-                        // Account exists
-                        //returns the chosen entry field value
-                        return resultSet.getString(entryField);
+            if (!resultSet.next()) {
+                    System.out.println(
+                            console.redBrightBackground + console.blackBold +
+                                    " Account Connection Error... " +
+                                    console.reset
+                    );
+            } else {
+                    // Account exists
+                    //returns the chosen entry field value
+                    return resultSet.getString(entryField);
                 }
-                } catch (SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
-                } finally {
+            } finally {
                 closeConnectionToDatabase();
-        }
+            }
         return null;
+    }
+
+    //update an entry field
+    public void updateNumericFields(String entryField, int newValue) {
+        getSavedOption();
+
+        String sql = "UPDATE registered_users SET " + entryField + " = ? WHERE account_number = ? AND pin = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql) ) {
+            preparedStatement.setInt(1, newValue);
+            preparedStatement.setString(2, getAccountNumber());
+            preparedStatement.setInt(3, getAccountPin());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnectionToDatabase();
+        }
     }
 
     /*
