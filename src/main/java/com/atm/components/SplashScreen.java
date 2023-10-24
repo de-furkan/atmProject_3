@@ -4,6 +4,8 @@ import com.atm.bank.Bank;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
+
+import java.sql.SQLException;
 import java.util.Scanner;
 
 
@@ -112,6 +114,8 @@ public class SplashScreen {
                     break;
                 case "3":
                     System.out.println("You have selected option 3");
+                    DepositScreen depositScreen = new DepositScreen();
+                    depositScreen.createDepositTransaction();
                     break;
                 case "4":
                     System.out.println("You have selected option 4");
