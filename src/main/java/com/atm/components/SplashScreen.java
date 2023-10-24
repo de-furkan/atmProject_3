@@ -121,6 +121,8 @@ public class SplashScreen {
                     break;
                 case "6":
                     System.out.println("You have selected option 6");
+                    ChangePin changePin = new ChangePin();
+                    changePin.checkCurrentPin();
                     break;
                 case "7":
                     System.out.println("You have selected option 7");
