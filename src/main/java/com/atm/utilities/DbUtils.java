@@ -4,9 +4,10 @@ import com.atm.bank.Customer;
 
 import java.sql.*;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
-import static com.atm.runner.Atm_Runner.user_1;
-import static com.atm.runner.Atm_Runner.user_2;
+import static com.atm.runner.Atm_Runner.*;
 
 public class DbUtils {
     /*
@@ -919,6 +920,144 @@ public class DbUtils {
             e.printStackTrace();
             try {
                 connection.rollback(savepoint);
+            } catch (SQLException rollback) {
+                rollback.printStackTrace();
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
+     * Transfer money
+     *****************************************
+     */
+
+    public void transferMoney(double amountToTransfer) {
+        getSavedOption();
+
+        String recipientAccountNumber = null;
+        // autCommit is set false to ensure the transaction is not committed automatically
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String checkAmountSql = "SELECT current_amount FROM registered_users WHERE account_number = ? AND pin = ?";
+        Savepoint checkAmountPoint = null;
+        try (PreparedStatement checkAmount = connection.prepareStatement(checkAmountSql)) {
+            checkAmountPoint = connection.setSavepoint();
+            checkAmount.setString(1, getAccountNumber());
+            checkAmount.setInt(2, getAccountPin());
+
+            ResultSet resultSet = checkAmount.executeQuery();
+            connection.commit();
+
+            while (resultSet.next()) {
+                double currentAmount = resultSet.getDouble("current_amount");
+
+                if (currentAmount <= amountToTransfer) {
+                    System.out.println(
+                            console.redBrightBackground + console.blackBold +
+                            " You do not have enough funds to transfer " + amountToTransfer + " " +
+                            console.reset
+                    );
+                    return;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(checkAmountPoint);
+            } catch (SQLException rollback) {
+                rollback.printStackTrace();
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+
+        // take input for account number of recipient of transfer
+        System.out.println("Please enter the account number you wish to transfer money to. ");
+        while (true) {
+            recipientAccountNumber = scanner.nextLine();
+
+            // Check if the account number is exactly 8 digits long
+            if (!Pattern.matches("\\d{8}", recipientAccountNumber)) {
+                System.out.println("Error: Account number should be exactly 8 digits long.");
+            } else {
+                System.out.println("Account number is valid.");
+                break;  // Exit the loop
+            }
+        }
+
+        //Update user and recipient accounts
+        String userSql = "UPDATE registered_users SET current_amount = current_amount - ? WHERE account_number = ?";
+
+        //reopen connection for next transaction
+        getSavedOption();
+
+        // autCommit is set false to ensure the transaction is not committed automatically
+        //this is done again because the connection was closed and reopened earlier
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // create a savepoint to roll back to if transaction fails
+        Savepoint saveTransactionPoint = null;
+
+        //first update user account
+        try (PreparedStatement preparedStatement = connection.prepareStatement(userSql)) {
+            saveTransactionPoint = connection.setSavepoint();
+            preparedStatement.setDouble(1, amountToTransfer);
+            preparedStatement.setString(2, getAccountNumber());
+
+            System.out.println("user account num: " + getAccountNumber());
+            System.out.println("user amount transfer: " + amountToTransfer);
+
+            //execute code
+            preparedStatement.executeUpdate();
+            connection.commit();
+            System.out.println(
+                    console.greenBrightBackground + console.blackBold +
+                    " You successfully transferred " + amountToTransfer + " to " + recipientAccountNumber + " "
+                    + console.reset
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                    connection.rollback(saveTransactionPoint);
+            } catch (SQLException rollback) {
+                    rollback.printStackTrace();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        //update recipient account
+        String recipientSql = "UPDATE registered_users SET current_amount = current_amount + ? WHERE account_number = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(recipientSql)) {
+            preparedStatement.setDouble(1, amountToTransfer);
+            preparedStatement.setString(2, recipientAccountNumber);
+
+            System.out.println("user account num: " + recipientAccountNumber);
+            System.out.println("user amount transfer: " + amountToTransfer);
+
+            //execute code
+            preparedStatement.executeUpdate();
+            connection.commit();
+            System.out.println(
+                    console.greenBrightBackground + console.blackBold +
+                    " Recipient successfully received " + amountToTransfer + " from " + getAccountNumber() + " "
+                    + console.reset);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(saveTransactionPoint);
             } catch (SQLException rollback) {
                 rollback.printStackTrace();
             }
