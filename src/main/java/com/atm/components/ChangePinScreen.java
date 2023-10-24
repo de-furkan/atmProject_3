@@ -1,13 +1,12 @@
 package com.atm.components;
 
-import com.atm.bank.Bank;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
 
 import java.util.Scanner;
 
-public class ChangePin {
+public class ChangePinScreen {
     /*
      *****************************************
      * Private Fields / Data
@@ -30,7 +29,7 @@ public class ChangePin {
      *****************************************
      */
 
-    public ChangePin() {
+    public ChangePinScreen() {
         this.database = Atm_Runner.database;
     }
 
