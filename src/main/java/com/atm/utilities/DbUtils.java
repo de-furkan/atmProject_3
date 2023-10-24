@@ -776,6 +776,59 @@ public class DbUtils {
 
     /*
      *****************************************
+     * Deposit money
+     *****************************************
+     */
+
+    public void depositAmount(double amountToDeposit) {
+        getSavedOption();
+
+        // autCommit is set false to ensure the transaction is not committed automatically
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // set a new current amount
+        String sql = "UPDATE registered_users SET current_amount = current_amount + ? WHERE account_number = ? AND pin = ?";
+
+        // create a savepoint to roll back to if transaction fails
+        Savepoint savepoint = null;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            savepoint = connection.setSavepoint();
+
+            preparedStatement.setDouble(1, amountToDeposit);
+            preparedStatement.setString(2, getAccountNumber());
+            preparedStatement.setInt(3, getAccountPin());
+
+            preparedStatement.executeUpdate();
+            connection.commit();
+            System.out.println(
+                    console.greenBrightBackground + console.blackBold +
+                            " You have successfully deposited " + amountToDeposit + " " +
+                            console.reset
+            );
+            System.out.println(
+                    console.yellowBackground + console.blackBold +
+                    " Your new balance is " + showEntryField("current_amount") + " " +
+                    console.reset
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(savepoint);
+            } catch (SQLException rollback) {
+                rollback.printStackTrace();
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
      * Close the database connection
      *****************************************
      */
