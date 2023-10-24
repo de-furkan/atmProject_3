@@ -111,6 +111,8 @@ public class SplashScreen {
                     break;
                 case "2":
                     System.out.println("You have selected option 2");
+                    WithdrawalScreen withdrawalScreen = new WithdrawalScreen();
+                    withdrawalScreen.createWithdrawTransaction();
                     break;
                 case "3":
                     System.out.println("You have selected option 3");
