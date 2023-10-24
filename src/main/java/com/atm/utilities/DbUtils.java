@@ -1,5 +1,7 @@
 package com.atm.utilities;
 
+import com.atm.bank.Customer;
+
 import java.sql.*;
 import java.util.Scanner;
 
@@ -805,6 +807,7 @@ public class DbUtils {
 
             preparedStatement.executeUpdate();
             connection.commit();
+
             System.out.println(
                     console.greenBrightBackground + console.blackBold +
                             " You have successfully deposited " + amountToDeposit + " " +
@@ -814,6 +817,103 @@ public class DbUtils {
                     console.yellowBackground + console.blackBold +
                     " Your new balance is " + showEntryField("current_amount") + " " +
                     console.reset
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(savepoint);
+            } catch (SQLException rollback) {
+                rollback.printStackTrace();
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
+     * Withdraw money
+     *****************************************
+     */
+
+    public void withdrawAmount(double amountToWithdraw) {
+        getSavedOption();
+
+        // autCommit is set false to ensure the transaction is not committed automatically
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String checkAmountSql = "SELECT current_amount FROM registered_users WHERE account_number = ? AND pin = ?";
+        Savepoint checkAmountPoint = null;
+        try (PreparedStatement checkAmount = connection.prepareStatement(checkAmountSql)) {
+            checkAmountPoint = connection.setSavepoint();
+            checkAmount.setString(1, getAccountNumber());
+            checkAmount.setInt(2, getAccountPin());
+
+            ResultSet resultSet = checkAmount.executeQuery();
+            connection.commit();
+
+            while (resultSet.next()) {
+                double currentAmount = resultSet.getDouble("current_amount");
+
+                if (currentAmount <= amountToWithdraw) {
+                    System.out.println(
+                            console.redBrightBackground + console.blackBold +
+                            " You do not have enough funds to withdraw " + amountToWithdraw + " " +
+                            console.reset
+                    );
+                    return;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(checkAmountPoint);
+            } catch (SQLException rollback) {
+                rollback.printStackTrace();
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+
+        // set a new current amount
+        String sql = "UPDATE registered_users SET current_amount = current_amount - ? WHERE account_number = ? AND pin = ?";
+
+        //reopen connection for next transaction
+        getSavedOption();
+
+        // autCommit is set false to ensure the transaction is not committed automatically
+        //this is done again because the connection was closed and reopened earlier
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // create a savepoint to roll back to if transaction fails
+        Savepoint savepoint = null;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            savepoint = connection.setSavepoint();
+
+            preparedStatement.setDouble(1, amountToWithdraw);
+            preparedStatement.setString(2, getAccountNumber());
+            preparedStatement.setInt(3, getAccountPin());
+
+            preparedStatement.executeUpdate();
+            connection.commit();
+            System.out.println(
+                    console.greenBrightBackground + console.blackBold +
+                            " You successfully took out " + amountToWithdraw + " " +
+                            console.reset
+            );
+            System.out.println(
+                    console.yellowBackground + console.blackBold +
+                            " Your new balance is " + showEntryField("current_amount") + " " +
+                            console.reset
             );
         } catch (SQLException e) {
             e.printStackTrace();
