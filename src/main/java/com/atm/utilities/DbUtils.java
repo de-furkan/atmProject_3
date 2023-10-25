@@ -673,6 +673,48 @@ public class DbUtils {
 
     /*
      *****************************************
+     * Update user isActive to false
+     *****************************************
+     */
+
+    public void userActivityOffline() {
+
+        getSavedOption();
+        // Open a new connection if necessary
+        if (connection == null) {
+            getSavedOption();
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE registered_users SET is_active = ? WHERE account_number = ? AND pin = ?");
+
+        try {
+            while (true) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+                    preparedStatement.setBoolean(1, false);
+                    preparedStatement.setString(2, getAccountNumber());
+                    preparedStatement.setInt(3, getAccountPin());
+
+                    //execute the script and store the result
+                    preparedStatement.executeUpdate();
+                    System.out.println(
+                            console.greenBrightBackground + console.blackBold +
+                                    " You are now OFFLINE. " +
+                                    console.reset
+                    );
+                    break;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
      * Show last four digits of card number
      *****************************************
      */
@@ -1061,6 +1103,46 @@ public class DbUtils {
             } catch (SQLException rollback) {
                 rollback.printStackTrace();
             }
+        } finally {
+            closeConnectionToDatabase();
+        }
+    }
+
+    /*
+     *****************************************
+     * Delete a User Account
+     *****************************************
+     */
+
+    public void deleteUserAccount() {
+        //connecting database
+        getSavedOption();
+
+        // autCommit is set false to ensure safe deletion of user account
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        //sql prepared statement to delete user from database
+        String sql = "DELETE FROM registered_users WHERE account_number = ? AND pin = ?";
+        Savepoint savepoint = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            savepoint = connection.setSavepoint();
+            preparedStatement.setString(1, getAccountNumber());
+            preparedStatement.setInt(2, getAccountPin());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        }catch (SQLException e) {
+            e.printStackTrace();
+                try {
+                    //rollback to savepoint if transaction fails
+                    connection.rollback(savepoint);
+                } catch (SQLException rollback) {
+                    //throw an exception if rollback fails
+                    rollback.printStackTrace();
+                }
         } finally {
             closeConnectionToDatabase();
         }
