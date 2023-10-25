@@ -147,3 +147,125 @@ The final option can remain unchecked and deactivated. Once done, click on the s
 </p>
 
 ![image](https://github.com/de-furkan/atmProject_3/assets/85889728/3e6798a8-d5f3-429e-a9f1-fc91a9280b91)
+
+<h3>Beginning Setup Within IDE Console</h3>
+
+<p>
+  For this demonstration, I'm utilising the IntelliJ IDEA Integrated Development Environment (IDE). However, you're welcome to use an IDE of your preference. Once the project is open, navigate through the following folders: `src > main > java`. Here, locate the 'runner' package and find the `Atm_Runner` class. Run this class to kickstart the application!
+
+</p>
+
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/64ed6697-84f7-4a18-ac42-c8fb518c37ca)
+
+<h3>Welcome Message</h3>
+
+<p>
+  Upon launching the application in your IDE, you'll notice an output similar to the one depicted in the image below. This will also be displayed in your console. You'll be presented with two options: type 'y' to confirm that you've read the GitHub Readme file, or 'n' to decline. Please note, that entering 'n' will prompt the message to reappear until you accept by entering 'y'.
+</p>
+
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/9c040ba8-dd17-4204-8936-18458e75a446)
+
+<h3>Setting up Database Connection Within the IDE</h3>
+
+<p>
+  After confirming the initial message, you'll encounter the next prompt (as shown below). At this juncture, please select option 2 to initiate the setup of your database connection. It's important to note that option 1 will not be applicable in this context, as the database isn't hosted on an online server. The server must be configured locally on your machine.
+</p>
+
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/83f333e7-fe6f-413d-8ba1-1c853eaede36)
+
+<p>
+  Upon selecting option 2, you'll be guided through a series of prompts. You'll be asked to enter specific details and press <code>Enter</code> to confirm each one. These prompts are designed to establish a connection with the database you created earlier. You'll be asked for the following information:
+
+- Domain name (essentially the Hostname/address you noted earlier)
+- Port number
+- Database name
+- Username (from the role you created earlier)
+- Password (also from the role you created earlier) - Please note, for security reasons, the password will not be visible after setup in the database. This is a default feature in PostgreSQL.
+</p>
+
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/f8a9ea3d-3de8-4dae-bfc6-28e87928dd73)
+
+
+<p>Once all these steps are completed, you should see a message stating:
+
+> "Thank-you. The provided data has been accepted.
+Table created successfully."
+
+This indicates that a table has been automatically created within the database connection you set up. </p>
+
+<img width="465" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/93f34ea1-684b-4c7e-97e4-3e71f08f03d4">
+
+<p>
+  You might have noticed the message:
+
+> » Please check the table is visible in your database...
+
+At this point, return to your pgAdmin PostgreSQL application and locate the database you created earlier. Click on it to ensure it's selected or highlighted (as shown in the example below). Finally, click on the 'Query Tool', also depicted in the image below.
+
+</p>
+
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/0c0b6097-0fd8-4724-840a-36b3b94919ff)
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/3070ec84-8983-4516-b34c-52f187bcc201)
+
+<p>
+Upon selecting the 'Query Tool', a blank page will appear, resembling the image provided below. This is where you'll be able to write and execute SQL queries on your database.
+</p>
+
+![image](https://github.com/de-furkan/atmProject_3/assets/85889728/6a9ead77-5abf-4747-8580-d52f7e71711b)
+
+<p>
+  The next step involves executing the following SQL query:
+
+```sql
+SELECT * FROM registered_users;
+```
+
+After entering the SQL query, proceed by clicking the 'Run' button, which is represented by a 'Play' icon located at the top of the page. This will execute the query on your database.
+In the bottom section of the page, you'll notice a table with column headers but no data. At this stage, it should appear empty, as illustrated in the second image below.
+</p>
+
+<img width="681" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/51bcfe5e-2ed7-4ca1-9fc4-32a72522f49a">
+
+<img src="https://github.com/de-furkan/atmProject_3/assets/85889728/ed48a9ae-d2c6-4541-bec4-7e53910694cb">
+
+<p>
+Next, return to your IDE console and look for the next prompt. This will ask you to confirm that the database has been created and exists within your database system. Once you've verified this, type <code>y</code> and press <code>Enter</code> to confirm. This action will generate some values and populate the table in your database.
+
+Upon seeing the console message:
+
+> 'Data Transfer Completed. Proceeding to next step...'
+
+you can revisit your database application and rerun the SQL query:
+
+```sql
+SELECT * FROM registered_users;
+```
+
+This will allow you to view the updated table and verify that the new information has been added.
+</p>
+
+<img width="623" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/4f39c8c9-9b2d-42db-b766-416ea0d5e0cb">
+<img width="432" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/52241d24-3092-4e3b-8d37-0c2a1b3d57ff">
+<img src="https://github.com/de-furkan/atmProject_3/assets/85889728/5d0b4f3b-a90a-4985-b2d9-e3459c828b24">
+
+<h3>Logging In to Your Account</h3>
+
+<p>
+  Next, you will encounter a prompt as shown in the image below. In this prompt, you will be asked to enter your `account_number` and `pin`. These details are usually the first entries in the database for your account. 
+
+  In the database, look for the columns that are labelled as `account_number` and `pin`. These are the details you will need to enter in the prompt.
+</p>
+
+<img width="373" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/fe82d71a-d027-4516-950b-ab65ce21e5ff">
+
+<h2>Congratulations🎉🥳</h2>
+
+<p>
+  You are now ready to play around with the application and test it out. Your exploration and feedback are valuable to the continuous improvement of these projects.
+</p>
+
+<p>
+  Thank you for taking the time to read through this tutorial. Your effort in understanding the workings of this application is greatly appreciated.
+
+Enjoy exploring my projects and happy coding! 😊
+</p>
