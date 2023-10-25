@@ -67,6 +67,14 @@ For an optimal and seamless experience with this application, kindly ensure you 
 
 > Please note that when you clone other people's repositories, you may be prompted with a warning message asking if you trust the owner of this project. You need to click 'Trust' or 'Continue' to accept the clone and begin the cloning process.
 
+<h3> VIDEO DEMO </h3>
+
+
+
+https://github.com/de-furkan/atmProject_3/assets/85889728/62872556-530d-4b27-abd0-aa8fdaba7fb0
+
+
+
 <h3>Creating the Database</h3>
 <p>
 Ensure that the pgAdmin PostgreSQL database application is open. Navigate to the left-hand side and under 'Servers', select the appropriate server. Typically, this is labelled as 'PostgreSQL' followed by your version number, as depicted in the image below.
