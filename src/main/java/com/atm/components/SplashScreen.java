@@ -5,7 +5,6 @@ import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
 
-import java.sql.SQLException;
 import java.util.Scanner;
 
 
@@ -106,34 +105,73 @@ public class SplashScreen {
             selectMenuOption = scanner.nextLine();
             switch (selectMenuOption) {
                 case "1":
-                    System.out.println("You have selected option 1");
+                    System.out.println(
+                            console.yellowBackground + console.blackBold +
+                            " Selected Check Balance "
+                            + console.reset
+                    );
                     balanceScreen.showBalanceMessage();
                     break;
                 case "2":
-                    System.out.println("You have selected option 2");
+                    System.out.println(
+                            console.yellowBackground + console.blackBold +
+                            " Selected Withdraw "
+                            + console.reset
+                    );
                     WithdrawalScreen withdrawalScreen = new WithdrawalScreen();
                     withdrawalScreen.createWithdrawTransaction();
                     break;
                 case "3":
-                    System.out.println("You have selected option 3");
+                    System.out.println(
+                            console.yellowBackground + console.blackBold +
+                            " Selected Deposit "
+                            + console.reset
+                    );
                     DepositScreen depositScreen = new DepositScreen();
                     depositScreen.createDepositTransaction();
                     break;
                 case "4":
-                    System.out.println("You have selected option 4");
+                    System.out.println(
+                                console.yellowBackground + console.blackBold +
+                            " Selected Transfer "
+                            + console.reset
+                    );
                     TransferScreen transferScreen = new TransferScreen();
                     transferScreen.createTransferTransaction();
                     break;
                 case "5":
-                    System.out.println("You have selected option 5");
+                    System.out.println(
+                            console.yellowBackground + console.blackBold +
+                            " Selected Delete Account "
+                            + console.reset
+                    );
+                    DeleteUserScreen deleteUserScreen = new DeleteUserScreen();
+                    deleteUserScreen.deleteUser();
                     break;
                 case "6":
-                    System.out.println("You have selected option 6");
-                    ChangePin changePin = new ChangePin();
+                    System.out.println(
+                            console.yellowBackground + console.blackBold +
+                            " Selected Change Pin "
+                            + console.reset
+                    );
+                    ChangePinScreen changePin = new ChangePinScreen();
                     changePin.checkCurrentPin();
                     break;
                 case "7":
-                    System.out.println("You have selected option 7");
+
+                    String closeMessage =  console.yellowBackground + console.blackBold +
+                            " Closing the ATM application... "
+                            + console.reset;
+                    for (int i = 0; i < closeMessage.length(); i++) {
+                        System.out.print(closeMessage.charAt(i));
+                        try {
+                            Thread.sleep(60);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    ExitScreen exitScreen = new ExitScreen();
+                    exitScreen.exitScreen();
                     break;
                 default:
                     System.out.println("Invalid input. Please try again.");
