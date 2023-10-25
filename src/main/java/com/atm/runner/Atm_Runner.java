@@ -127,8 +127,8 @@ public class Atm_Runner {
         //2. Withdraw
         //3. Deposit
         //4. Transfer
-        //5. Change Pin
-        //6. Update user information
+        //5. Delete Account
+        //6. Change Pin
         //7. Logout
         splashScreen.homeMenu();
     }
