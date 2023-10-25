@@ -27,8 +27,6 @@ I am thrilled to announce that my ATM project has finally reached the finish lin
 
 While I've conducted a variety of tests, it's important to note that no amount of testing can guarantee 100% bug-free software. It's always possible that some bugs may surface in real-world usage. However, rest assured that every effort has been made to deliver a high-quality, reliable ATM project!
 
-#SoftwareTesting #QualityAssurance #ATMProject #Github
-
 </p>
 
 <h2>ATM Project Design / Architecture</h2>
