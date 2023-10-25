@@ -244,11 +244,6 @@ public class DbUtils {
                     "admin",
                     "root123"
             );
-            //Show success message if connection is a success
-            System.out.println(
-                    "Successfully connected to database:" + console.reset + " " +
-                            console.blackBackground + console.greenBold + " " + connection.getCatalog() + " " + console.reset
-            );
         } catch (SQLException e) {
             //throw an exception if connection fails
             e.printStackTrace();
@@ -319,11 +314,6 @@ public class DbUtils {
                     "jdbc:postgresql://" + getConnectionDomainName() + ":" + getConnectionPortNumber() + "/" + getConnectionDatabaseName(),
                     getConnectionUsername(),
                     getConnectionPassword()
-            );
-            //Show success message if connection is a success
-            System.out.println(
-                    "Successfully connected to database:" + console.reset + " " +
-                     console.blackBackground + console.greenBold + " " + connection.getCatalog() + " " + console.reset
             );
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1077,7 +1067,7 @@ public class DbUtils {
             preparedStatement.setDouble(1, amountToTransfer);
             preparedStatement.setString(2, getAccountNumber());
 
-            System.out.println("user account num: " + getAccountNumber());
+            System.out.println("user account number: " + getAccountNumber());
             System.out.println("user amount transfer: " + amountToTransfer);
 
             //execute code
@@ -1106,8 +1096,8 @@ public class DbUtils {
             preparedStatement.setDouble(1, amountToTransfer);
             preparedStatement.setString(2, recipientAccountNumber);
 
-            System.out.println("user account num: " + recipientAccountNumber);
-            System.out.println("user amount transfer: " + amountToTransfer);
+            System.out.println("Recipient account number: " + recipientAccountNumber);
+            System.out.println("Recipient amount received: " + amountToTransfer);
 
             //execute code
             preparedStatement.executeUpdate();
@@ -1177,7 +1167,6 @@ public class DbUtils {
         //closes the connection to database
         try {
             connection.close();
-            System.out.println("Connection to database " + console.purpleBold + console.blackBackground + " closed " + console.reset + " successfully.");
         } catch (SQLException e) {
             //throw an exception if connection fails
             e.printStackTrace();
