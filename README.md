@@ -51,6 +51,24 @@ While I've conducted a variety of tests, it's important to note that no amount o
 For an optimal and seamless experience with this application, kindly ensure you thoroughly read and follow the instructions provided below. Proper setup is key to unlocking the full potential of this application. Enjoy your journey!
 </p>
 
+<h3>Cloning the Project</h3>
+<p>
+  To begin cloning the GitHub project, simply head over to the repository, and click the big green button that says <code> <> Code </code>. From here, copy the HTTPS URL link, then head over to IntelliJ (since I am using IntelliJ for this project), but the steps will probably be similar on other Integrated Development Environments as well.
+</p>
+
+<img width="916" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/129eb1dc-0f90-435f-b73e-beb80a5b84dd">
+
+<p>
+  Next, you need to click on 'Get from VCS', where you will see a new dialog asking for the URL. You need to paste the URL into the URL field. Before doing this, please double-check from the left-hand side that you have successfully logged in to your GitHub profile and have it connected to IntelliJ. Once you have pasted the URL, click the clone button to begin cloning the repository to your IntelliJ.
+
+</p>
+
+<img width="434" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/e1d9ab1f-26d0-4296-8b7e-3f9466ca44e5">
+<img width="795" alt="image" src="https://github.com/de-furkan/atmProject_3/assets/85889728/401ac466-104f-47cf-88ae-fb23bfdeb6e2">
+
+
+> Please note that when you clone other people's repositories, you may be prompted with a warning message asking if you trust the owner of this project. You need to click 'Trust' or 'Continue' to accept the clone and begin the cloning process.
+
 <h3>Creating the Database</h3>
 <p>
 Ensure that the pgAdmin PostgreSQL database application is open. Navigate to the left-hand side and under 'Servers', select the appropriate server. Typically, this is labelled as 'PostgreSQL' followed by your version number, as depicted in the image below.
@@ -60,7 +78,6 @@ Ensure that the pgAdmin PostgreSQL database application is open. Navigate to the
 
 <p>
   Next, perform a right-click on the server you intend to use. From the dropdown menu that appears, hover over the 'Create' option and then select 'Database'.
-
 </p>
 
 ![image](https://github.com/de-furkan/atmProject_3/assets/85889728/87561b13-3b87-4672-9f9f-c902d7d5c0ff)
