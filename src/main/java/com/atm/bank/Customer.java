@@ -2,10 +2,8 @@ package com.atm.bank;
 
 import com.atm.utilities.ConsoleUtils;
 import com.github.javafaker.Faker;
-import com.google.gson.Gson;
-
 import java.sql.Date;
-import java.text.DecimalFormat;
+
 
 public class Customer {
     /*
@@ -349,8 +347,6 @@ public class Customer {
     public void generateCurrentAmount() {
         //Generate a random amount between 10,000 and 250,000
         double amount = faker.number().numberBetween(10_000, 250_000);
-        //You can format the amount during Transactions using StringFormat
-        // "%.2f%n"
         setCurrentAmount(amount);
     }
 
@@ -468,7 +464,7 @@ public class Customer {
                 .append("\t").append("accountNumber: ").append(getAccountNumber()).append("\n")
                 .append("}");
 
-        //Display JSON data
+        //Display custom JSON formatted data
         System.out.println(buildJson);
     }
 }

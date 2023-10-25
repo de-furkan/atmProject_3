@@ -1,10 +1,8 @@
 package com.atm.components;
 
-import com.atm.bank.Bank;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
 import java.util.Scanner;
 
 public class DeleteUserScreen {
@@ -22,7 +20,6 @@ public class DeleteUserScreen {
      */
     ConsoleUtils console = new ConsoleUtils();
     Scanner scanner = new Scanner(System.in);
-    Bank bank = new Bank();
     SplashScreen splashScreen = new SplashScreen();
 
     /*

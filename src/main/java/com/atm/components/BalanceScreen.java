@@ -4,8 +4,6 @@ import com.atm.bank.Bank;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -56,24 +54,27 @@ public class BalanceScreen {
         //second
         int second = timeNow.getSecond();
 
-        //create date string
+        //create formatted date string
         String date = day + "/" + month + "/" + year;
 
-        //create time string
+        //create formatted time string
         String time = hour + ":" + minute + ":" + second;
 
-
+        //print date and time
         System.out.println(
                 console.purpleBold +
-                        "Date" + "\t\t\t\t\ttime" +
-                        console.reset
+                "Date" + "\t\t\t\t\ttime" +
+                console.reset
         );
 
+        //store full card number then mask all numbers expect last 4
         String fullCardNumber = database.showFullCardNumber();
         String maskedCardNumber = fullCardNumber.substring(0, fullCardNumber.length() - 4)
                 .replaceAll("\\d", "X") +
                 fullCardNumber.substring(fullCardNumber.length() - 4);
 
+        //create message that will be printed
+        //this message will show the date, time, masked card number and current balance
         StringBuilder message = new StringBuilder();
         message.append("\n")
                 .append(date).append("\t\t\t\t").append(time).append("\n")

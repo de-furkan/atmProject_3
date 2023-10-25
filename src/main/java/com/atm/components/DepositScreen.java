@@ -3,8 +3,6 @@ package com.atm.components;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
-import java.sql.SQLException;
 import java.util.Scanner;
 
 public class DepositScreen {
@@ -51,8 +49,8 @@ public class DepositScreen {
                 System.out.println(depositAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. Please provide a numeric value: " +
-                                console.reset
+                        " Invalid input. Please provide a numeric value: " +
+                        console.reset
                 );
                 depositAmount = scanner.nextLine();
                 // Check if the provided deposit amount is less than 5
@@ -60,8 +58,8 @@ public class DepositScreen {
                 System.out.println(depositAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. The value must be greater than or equal to 5: " +
-                                console.reset
+                        " Invalid input. The value must be greater than or equal to 5: " +
+                        console.reset
                 );
                 depositAmount = scanner.nextLine();
                 // Check if the provided deposit amount is greater than 1000
@@ -69,8 +67,8 @@ public class DepositScreen {
                 System.out.println(depositAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. The value must be less than or equal to 1000: " +
-                                console.reset
+                        " Invalid input. The value must be less than or equal to 1000: " +
+                        console.reset
                 );
                 depositAmount = scanner.nextLine();
             } else {

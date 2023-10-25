@@ -5,8 +5,6 @@ import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
 
-import java.util.Scanner;
-
 public class ExitScreen {
     /*
      *****************************************

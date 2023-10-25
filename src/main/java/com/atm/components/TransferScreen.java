@@ -3,7 +3,6 @@ package com.atm.components;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
 import java.util.Scanner;
 
 public class TransferScreen {
@@ -50,26 +49,26 @@ public class TransferScreen {
                 System.out.println(transferAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. Please provide a numeric value: " +
-                                console.reset
+                        " Invalid input. Please provide a numeric value: " +
+                        console.reset
                 );
                 transferAmount = scanner.nextLine();
-                // Check if the provided transfer amount is less than 5
+                // Check if the provided transfer amount is less than 50
             } else if (Double.parseDouble(transferAmount) < 50) {
                 System.out.println(transferAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. The value must be greater than or equal to 50: " +
-                                console.reset
+                        " Invalid input. The value must be greater than or equal to 50: " +
+                        console.reset
                 );
                 transferAmount = scanner.nextLine();
-                // Check if the provided transfer amount is greater than 1000
+                // Check if the provided transfer amount is greater than 1500
             } else if (Double.parseDouble(transferAmount) > 1500) {
                 System.out.println(transferAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. The value must be less than or equal to 1500: " +
-                                console.reset
+                        " Invalid input. The value must be less than or equal to 1500: " +
+                        console.reset
                 );
                 transferAmount = scanner.nextLine();
             } else {

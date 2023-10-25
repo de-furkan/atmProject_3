@@ -1,12 +1,8 @@
 package com.atm.utilities;
 
-import com.atm.bank.Customer;
-
 import java.sql.*;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
-
 import static com.atm.runner.Atm_Runner.*;
 
 public class DbUtils {
@@ -23,15 +19,13 @@ public class DbUtils {
      *****************************************
      */
     private static String connectionChoice = null; //user input for connection choice
-    private String accountNumber;
-    private int accountPin;
+    private String accountNumber; //user account number
+    private int accountPin; //user account pin
     private String connectionDomainName; //user input for domain name
     private String connectionPortNumber; //user input for port number
     private String connectionDatabaseName; //user input for database name
     private String connectionUsername; //user input for username
     private String connectionPassword; //user input for password
-
-
     public static Connection connection; //connection object to connect to database
 
     /*
@@ -158,8 +152,8 @@ public class DbUtils {
             //Note: connectDatabaseMessage() is recursive
             System.out.println(
                     "-----------------------------------------------------\n" +
-                            console.redBackground + console.blackBold + " Please READ the instructions below and try again... " + console.reset + "\n" +
-                            "-----------------------------------------------------"
+                    console.redBackground + console.blackBold + " Please READ the instructions below and try again... " + console.reset + "\n" +
+                    "-----------------------------------------------------"
             );
             connectDatabaseMessage();
         }
@@ -170,6 +164,21 @@ public class DbUtils {
      * Provide options to connect database
      * 1. automatically [admin use only]
      * 2. manually      [external use]
+     * ---------------------------------------
+     * Option 1: is used by project owner to
+     * automatically connect the application
+     * to the database.
+     * ---------------------------------------
+     * Option 2: is used by external users to
+     * manually connect the application to
+     * the database. This is because the
+     * project is not in an online server.
+     * For this reason, external users must
+     * create their own database and connect
+     * the application to their database.
+     * Luckily, the application will provide
+     * the necessary steps to set up the
+     * database schema and connection.
      *****************************************
      */
     public void connectToDatabaseOptions() {
@@ -182,7 +191,10 @@ public class DbUtils {
                 getConnectionChoice() == null ||
                         !getConnectionChoice().equals("1") && !getConnectionChoice().equals("2")
         ) {
-            String chooseOptionMessage = console.blackBackground + console.purpleBold + " Below, you will be prompted to choose an option for connecting to a database. " + console.reset + "\n\n" +
+            String chooseOptionMessage =
+                    console.blackBackground + console.purpleBold +
+                    " Below, you will be prompted to choose an option for connecting to a database. "
+                    + console.reset + "\n\n" +
                     "Note: This is a one time setup to ensure the program runs smoothly.\n" +
                     "Please select option 2 if you do not own this project.\n";
 
@@ -251,8 +263,8 @@ public class DbUtils {
     public void setDataForDatabaseConnectionChoiceTwo() {
         try {
             System.out.println(
-                    "Below you will be prompted to provide valid information to connect to a postgreSQL based database.\n" +
-                            "Please double check that the provided details are correct...\n\n"
+                    "Below you will be prompted to provide valid information to connect to a postgreSQL based database.\n"
+                    + "Please double check that the provided details are correct...\n\n"
             );
 
             //user must provide a valid domain name
@@ -334,15 +346,15 @@ public class DbUtils {
                 createTable
                             .append("CREATE TABLE IF NOT EXISTS registered_users").append("(").append("\n")
                             .append("id SERIAL PRIMARY KEY,").append("\n")
-                            .append("first_name VARCHAR(150) NOT NULL,").append("\n")
-                            .append("last_name VARCHAR(150) NOT NULL,").append("\n")
+                            .append("first_name VARCHAR(200) NOT NULL,").append("\n")
+                            .append("last_name VARCHAR(200) NOT NULL,").append("\n")
                             .append("date_of_birth DATE NOT NULL,").append("\n")
                             .append("gender VARCHAR(6) NOT NULL,").append("\n")
-                            .append("country_of_birth VARCHAR(50) NOT NULL,").append("\n")
-                            .append("address VARCHAR(150) NOT NULL,").append("\n")
+                            .append("country_of_birth VARCHAR(200) NOT NULL,").append("\n")
+                            .append("address VARCHAR(250) NOT NULL,").append("\n")
                             .append("ssn VARCHAR(11) NOT NULL,").append("\n")
                             .append("phone VARCHAR(15) NOT NULL,").append("\n")
-                            .append("username VARCHAR(50) NOT NULL,").append("\n")
+                            .append("username VARCHAR(30) NOT NULL,").append("\n")
                             .append("password VARCHAR(50) NOT NULL,").append("\n")
                             .append("current_amount DECIMAL(10,2) NOT NULL,").append("\n")
                             .append("is_active BOOLEAN NOT NULL,").append("\n")
@@ -496,8 +508,8 @@ public class DbUtils {
             //Show success message if customer is added to database
             System.out.println(
                     console.greenBrightBackground +
-                            console.blackBold +
-                            " Customer successfully added to database... " + console.reset
+                    console.blackBold +
+                    " Customer successfully added to database... " + console.reset
             );
         } catch (SQLException e) {
             e.printStackTrace();
@@ -643,6 +655,7 @@ public class DbUtils {
             getSavedOption();
         }
 
+        //sql prepared statement to update user isActive to true
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE registered_users SET is_active = ? WHERE account_number = ? AND pin = ?");
 
@@ -685,6 +698,7 @@ public class DbUtils {
             getSavedOption();
         }
 
+        //sql prepared statement to update user isActive to false
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE registered_users SET is_active = ? WHERE account_number = ? AND pin = ?");
 
@@ -730,6 +744,7 @@ public class DbUtils {
             e.printStackTrace();
         }
 
+        //gets a matching user by their account number and pin
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM registered_users WHERE account_number = ? AND pin = ?");
 
@@ -769,7 +784,8 @@ public class DbUtils {
 
 
 
-    //Show a chosen entry field
+    //Show a chosen column value from the database
+    //Only if a matching account number and pin is found
     public String showEntryField(String entryField) {
         getSavedOption();
 
@@ -828,7 +844,7 @@ public class DbUtils {
     public void depositAmount(double amountToDeposit) {
         getSavedOption();
 
-        // autCommit is set false to ensure the transaction is not committed automatically
+        // autoCommit is set false to ensure the transaction is not committed automatically
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
@@ -882,7 +898,7 @@ public class DbUtils {
     public void withdrawAmount(double amountToWithdraw) {
         getSavedOption();
 
-        // autCommit is set false to ensure the transaction is not committed automatically
+        // autoCommit is set false to ensure the transaction is not committed automatically
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
@@ -928,7 +944,7 @@ public class DbUtils {
         //reopen connection for next transaction
         getSavedOption();
 
-        // autCommit is set false to ensure the transaction is not committed automatically
+        // autoCommit is set false to ensure the transaction is not committed automatically
         //this is done again because the connection was closed and reopened earlier
         try {
             connection.setAutoCommit(false);
@@ -980,7 +996,7 @@ public class DbUtils {
         getSavedOption();
 
         String recipientAccountNumber = null;
-        // autCommit is set false to ensure the transaction is not committed automatically
+        // autoCommit is set false to ensure the transaction is not committed automatically
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
@@ -1021,7 +1037,11 @@ public class DbUtils {
         }
 
         // take input for account number of recipient of transfer
-        System.out.println("Please enter the account number you wish to transfer money to. ");
+        System.out.println(
+                console.yellowBackground + console.blackBold +
+                " Please enter the account number you wish to transfer money to. "
+                + console.reset
+        );
         while (true) {
             recipientAccountNumber = scanner.nextLine();
 
@@ -1118,7 +1138,7 @@ public class DbUtils {
         //connecting database
         getSavedOption();
 
-        // autCommit is set false to ensure safe deletion of user account
+        // autoCommit is set false to ensure safe deletion of user account
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e){

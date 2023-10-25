@@ -4,7 +4,6 @@ import com.atm.bank.Bank;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
 import java.util.Scanner;
 
 
@@ -77,9 +76,11 @@ public class SplashScreen {
     public void verificationIntroMessage() {
         System.out.println(console.purpleBold +"Verification & Authentication Screen" + console.reset);
         System.out.println("You will be prompted to enter your account number and pin to proceed.");
-        System.out.println("Please note, you can check your information by scrolling to the top\n" +
+        System.out.println(
+                "Please note, you can check your information by scrolling to the top\n" +
                 "in the console, or by checking the database. \n" +
-                "Your personal data is stored in the database for your convenience, usually the first entry.\n");
+                "Your personal data is stored in the database for your convenience, usually the first entry.\n"
+        );
     }
 
     /*

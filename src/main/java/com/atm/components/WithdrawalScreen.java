@@ -3,7 +3,6 @@ package com.atm.components;
 import com.atm.runner.Atm_Runner;
 import com.atm.utilities.ConsoleUtils;
 import com.atm.utilities.DbUtils;
-
 import java.util.Scanner;
 
 public class WithdrawalScreen {
@@ -33,27 +32,27 @@ public class WithdrawalScreen {
     }
 
     public String checkAmountToWithdraw() {
-        //deposit message
+        //withdraw message
         System.out.println(
                 console.blackBackground + console.greenBold +
-                        " How much would you like to Withdraw? "
-                        + console.reset + "\n\n"
+                " How much would you like to Withdraw? "
+                + console.reset + "\n\n"
         );
 
         // get the deposit amount
         String withdrawAmount = scanner.nextLine();
 
-        // Check if the provided deposit amount is a number
+        // Check if the provided withdraw amount is a number
         while (true) {
             if (!withdrawAmount.matches("\\d+")) {
                 System.out.println(withdrawAmount);
                 System.out.println(
                         console.redBrightBackground + console.blackBold +
-                                " Invalid input. Please provide a numeric value: " +
-                                console.reset
+                        " Invalid input. Please provide a numeric value: " +
+                        console.reset
                 );
                 withdrawAmount = scanner.nextLine();
-                // Check if the provided deposit amount is less than 5
+                // Check if the provided withdraw amount is less than 5
             } else if (Double.parseDouble(withdrawAmount) < 5) {
                 System.out.println(withdrawAmount);
                 System.out.println(
@@ -62,7 +61,7 @@ public class WithdrawalScreen {
                                 console.reset
                 );
                 withdrawAmount = scanner.nextLine();
-                // Check if the provided deposit amount is greater than 1000
+                // Check if the provided withdraw amount is greater than 1500
             } else if (Double.parseDouble(withdrawAmount) > 1500) {
                 System.out.println(withdrawAmount);
                 System.out.println(
